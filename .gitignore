@@ -1,0 +1,31 @@
+# Generated dependencies and builds
+node_modules/
+dist/
+dist-firefox/
+coverage/
+*.tsbuildinfo
+
+# Local configuration, signing keys and private exports
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crx
+*.xpi
+*.zip
+*.ics
+*.ical
+no-backup*.json
+web-ext-artifacts/
+.browser-profiles/
+playwright-report/
+test-results/
+
+# Editor and OS files
+.DS_Store
+.idea/
+.vscode/
+*.log
