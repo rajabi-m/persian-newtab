@@ -47,4 +47,4 @@ Lunar holidays are verified for 1405 only. Any new year's data needs source attr
 
 ## Releases
 
-Contributing does not require access to store accounts. Maintainers review releases and handle Mozilla signing separately. CI builds and tests only; it does not publish or sign packages. See [RELEASING.md](RELEASING.md).
+Contributing does not require access to store accounts. Maintainers review releases and handle Mozilla signing separately. CI validates pull requests; successful pushes to main publish development ZIPs in GitHub Releases. It does not sign packages or publish to browser stores. See [RELEASING.md](RELEASING.md).

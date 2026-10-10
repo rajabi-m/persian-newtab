@@ -1,7 +1,9 @@
-name: Build and test
+name: Build, test and release
 on:
   push:
+    branches: [main]
   pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,3 +24,41 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run check
       - run: git diff --exit-code
+      - name: Package and validate browser builds
+        run: python3 scripts/package-release.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: browser-packages
+          path: release-assets/
+          if-no-files-found: error
+          retention-days: 14
+  release:
+    needs: check
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: browser-packages
+          path: release-assets/
+      - name: Publish main branch build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          BUILD_SHA: ${{ github.sha }}
+          BUILD_RUN: ${{ github.run_id }}
+          BUILD_ATTEMPT: ${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          tag="main-${BUILD_RUN}-${BUILD_ATTEMPT}"
+          version="$(cat release-assets/VERSION.txt)"
+          gh release create "$tag" release-assets/*.zip release-assets/SHA256SUMS.txt \
+            --target "$BUILD_SHA" \
+            --title "Main build ${version} (${BUILD_SHA:0:7})" \
+            --notes-file release-assets/RELEASE_NOTES.md \
+            --prerelease --latest=false
+          echo "### Browser downloads" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://github.com/${GH_REPO}/releases/tag/${tag}" >> "$GITHUB_STEP_SUMMARY"

@@ -11,4 +11,10 @@ Only a maintainer should publish store releases. No publishing credentials are i
 7. Check listing screenshots and package contents for real calendar events, private feed URLs, personal notes, account details and secrets. Use the clean demo images in `docs/images/`.
 8. Submit the Firefox package for Mozilla signing. Each new release needs a new signature for normal Firefox installation. Chrome unpacked builds can be used locally; public Chrome distribution is a separate store process.
 
-CI verifies code; successful CI does not mean store approval or publication. Store submissions and downloaded signed packages belong outside the tracked source tree. Any release automation must be configured explicitly later.
+## Automatic GitHub releases
+
+Every push to `main` runs tests and builds both browsers. On success, a separate job publishes both ZIPs and SHA-256 checksums as a GitHub prerelease. Each build has its own `main-<run-id>-<attempt>` tag pointing to the exact commit, so old downloads are preserved even when the extension version has not changed. A manual workflow run on `main` also publishes; pull requests only validate and never release.
+
+The workflow uses GitHub's built-in token with read access for builds and write access only in the release job. No extra secret is required. GitHub Actions must be enabled and repository policy must allow the release job's contents write permission. If publication is denied by repository policy, the successful build's ZIPs remain available as Actions artifacts for 14 days.
+
+Firefox downloads are explicitly labeled unsigned. CI does not sign, submit to stores or imply store approval. Store submissions and signed packages remain separate from these main-branch builds.
