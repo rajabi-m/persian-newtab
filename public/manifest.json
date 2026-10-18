@@ -12,7 +12,7 @@
     "128": "icons/128.png"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; img-src 'self' data: blob:; connect-src https://calendar.google.com; font-src 'self'; media-src 'self' blob:;"
+    "extension_pages": "script-src 'self'; object-src 'none'; img-src 'self' data: blob: https: http:; connect-src https://calendar.google.com; font-src 'self'; media-src 'self' blob:;"
   },
   "optional_host_permissions": [
     "https://calendar.google.com/*"
